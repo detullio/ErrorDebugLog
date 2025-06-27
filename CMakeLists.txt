@@ -18,10 +18,16 @@ add_compile_options(-Wall -Wswitch -Wdeprecated-declarations -Wempty-body -Wconv
 add_compile_options(-fstrict-aliasing -fno-omit-frame-pointer -fthreadsafe-statics -fexceptions -frtti)
 
 add_compile_options(-ggdb3)
+find_package(Boost 1.74.0 REQUIRED COMPONENTS log unit_test_framework)
 
-add_library(KDeTLogger Logger.cpp Assertions.cpp)
-
+set(CMAKE_BUILD_RPATH ${Boost_LIBRARY_DIRS})
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+set(GLOBAL_LOG_ENABLED true)
+add_library(KDeTLogger Logger.cpp Assertions.cpp)
+add_executable(LoggerTests TestDriver.cpp TestSuite.cpp)
+add_dependencies(LoggerTests KDeTLogger)
+
+target_link_libraries(LoggerTests KDeTLogger ${Boost_LIBRARIES} ${CMAKE_DL_LIBS} stdc++fs)
 
 
 
